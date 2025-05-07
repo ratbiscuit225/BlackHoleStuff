@@ -5,6 +5,8 @@ import time    #calling time to provide delays in program
 DEW_HEATER_PIN = 35
 AMBIENT_DHT_PIN = 4
 
+DEW_HEATER_STEP = 10
+
 def main(args):
     print("Starting dew heater module")
     GPIO.setmode(GPIO.BOARD);
@@ -20,14 +22,20 @@ def main(args):
         humidity, ambientTemperatureC = DHT.read_retry(DHT.AM2302, AMBIENT_DHT_PIN)
         ambientTemperatureF = (ambientTemperatureC * (9.0/5.0)) + 32
         
-        
-        
         # Get tube temperature
         # <Insert Code to Read tube temp>
         
         # Calculate dew heater setting
         # <Insert calculation code>
+	# tempDiff = tubeTemperature - ambientTemperatureF
+
+	tubeSetPoint = ambientTemperature + 5
+	tempDiff = tubeSetPoint - tubeTemperature
+	heaterIntensity = 0 if tempDiff <= 0 else tempDiff*DEW_HEATER_STEP
+
         tempValue = ambientTemperatureF - 76
+
+	
         if tempValue < 0:
             tempValue = 0
         elif tempValue > 10:
